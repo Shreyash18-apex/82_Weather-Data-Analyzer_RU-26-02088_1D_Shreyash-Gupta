@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 
 def load_file():
-    # keep asking until a valid file name is given
     while True:
         filename = input("Enter CSV file name: ")
         if os.path.exists(filename):
@@ -18,7 +17,6 @@ def load_file():
 
 
 def show_summary(data):
-    # use NumPy for calculations
     temp = np.array(data["Temp"])
     average = np.mean(temp)
     highest = np.max(temp)
@@ -26,7 +24,6 @@ def show_summary(data):
     std = np.std(temp)
 
     if len(data) == 1:
-        # only one row of data
         print("Average Temp: %.2f C | Max: %d | Min: %d | Std Dev: %.2f"
               % (average, highest, lowest, std))
     else:
@@ -38,20 +35,18 @@ def show_summary(data):
 
 
 def clean_and_plot(data):
-    # step 1: remove duplicate rows
     rows_before = len(data)
     data = data.drop_duplicates()
     data = data.reset_index(drop=True)
     removed = rows_before - len(data)
-
-    # step 2: fill missing Temp with the mean
+    
     mean_temp = data["Temp"].mean()
     data["Temp"] = data["Temp"].fillna(mean_temp)
 
     print("Duplicates removed: %d | Missing Temp filled with mean: %.2f" % (removed, mean_temp))
     print("Cleaned rows: %d | Line chart 'Temperature Trend' displayed" % len(data))
 
-    # bar chart (rainfall) - saved as image
+    
     plt.figure()
     plt.bar(data["Date"].dt.strftime("%Y-%m-%d"), data["Rainfall"])
     plt.title("Rainfall per Day")
@@ -60,7 +55,7 @@ def clean_and_plot(data):
     plt.savefig("rainfall_bar.png")
     plt.close()
 
-    # line chart (temperature) - saved and shown
+    
     plt.figure()
     plt.plot(data["Date"], data["Temp"], marker="o")
     plt.title("Temperature Trend")
